@@ -5,6 +5,7 @@
 
 class Ratio {
   public:
+    // Constructors
     Ratio() = delete;
     Ratio(double numerator, double denominator = 1) = delete;
     Ratio(float numerator, float denominator = 1) = delete;
@@ -14,20 +15,21 @@ class Ratio {
     Ratio(const Ratio &);
    ~Ratio() = default;
 
-    Ratio &operator=(const Ratio &); //assignment operator
+    // Assignment operator
+    Ratio &operator=(const Ratio &); 
 
-    //getters
+    // Getters
     long numerator() const;
     long denominator() const;
 
-    //setters
+    // Setters
     void numerator(long top);
     void denominator(long bot);
 
-    //methods for normalization
+    // Methods for normalization
     static Ratio normalize(Ratio a);
 
-    //Ratio operations
+    // Ratio operations
     long double ratio() const;
     Ratio add(Ratio r1 = 0, Ratio r2 = 0, Ratio r3 = 0, Ratio r4 = 0, Ratio r5 = 0, Ratio r6 = 0, Ratio r7 = 0, Ratio r8 = 0);
     Ratio subtract(Ratio r2);
@@ -37,7 +39,7 @@ class Ratio {
     int compare(long double val);
     
     
-    //Operator overloading
+    // Operator overloading
     Ratio operator+(const Ratio &) const;
     Ratio operator-(const Ratio &) const;
     Ratio operator*(const Ratio &) const;
@@ -47,10 +49,10 @@ class Ratio {
   private:
     long num, denom;
 
-    //Helper functions for math; only called within the class.
+    // Helper functions for math; only called within the class.
     static int gcd(int a, int b);
     static int lcm(int a, int b);
-  }; //end of class header
+  };
 
   // Stream operator overloads
   std::istream &operator>>(std::istream &is, Ratio &f);

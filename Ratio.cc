@@ -43,33 +43,25 @@ void Ratio::denominator(long bot){
 
 // Ratio operations
 long double Ratio::ratio() const{
-  long double upper = num;
-  long double lower = denom;
+  long double upper = num, lower = denom;
   return upper/lower;
 }
 
 Ratio Ratio::add(Ratio r1, Ratio r2, Ratio r3, Ratio r4, Ratio r5, Ratio r6, Ratio r7, Ratio r8){
-  return *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
+    return *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
 }
+Ratio Ratio::subtract(Ratio r2){ return *this - r2; }
 
-Ratio Ratio::subtract(Ratio r2){
-    return *this - r2;
-}
+Ratio Ratio::multiply(Ratio r2){ return *this * r2; }
 
-Ratio Ratio::multiply(Ratio r2){
-    return *this * r2;
-}
-
-Ratio Ratio::divide(Ratio r2){
-    return *this / r2;
-}
+Ratio Ratio::divide(Ratio r2){ return *this / r2;}
 
 int Ratio::compare(Ratio r2){
     Ratio a = normalize(*this);
     Ratio b = normalize(r2);
     if (*this == r2)
         return 0;
-    if (a.numerator() - b.numerator() > 0)
+    else if (a.numerator() - b.numerator() > 0)
         return 1;
     return -1;
 }
@@ -132,11 +124,12 @@ Ratio Ratio::normalize(Ratio a){
 
 // Operator overloading
 Ratio Ratio::operator+(const Ratio &rhs) const {
-  if (rhs.numerator() == 0) //if zero, return left hand side
-    return Ratio(num, denom);
-
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
+  
+  if (rhs.numerator() == 0) //if zero, return left hand side
+    return Ratio(a.num, a.denom);
+  
   long newDenom = gcd(a.denominator(), b.denominator())*lcm(a.denominator(), b.denominator());
   long newNum = a.numerator()*(newDenom/a.denominator()) + b.numerator()*(newDenom/b.denominator());
   
@@ -175,6 +168,7 @@ bool Ratio::operator==(const Ratio &rhs) const {
       return true;
   return false; 
 }
+
 // Operator Overloading for extraction and insertion
 istream &operator>>(std::istream &is, Ratio &val) {
     long numer, denom;
@@ -182,7 +176,6 @@ istream &operator>>(std::istream &is, Ratio &val) {
     is >> numer >> c >> denom;
     val.numerator(numer);
     val.denominator(denom);
-
     return is;
 }
 
