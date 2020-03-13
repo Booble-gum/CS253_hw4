@@ -1,5 +1,4 @@
 #include "Ratio.h"
-#include <cmath>
 using namespace std;
 
 // Constructors
@@ -135,16 +134,7 @@ Ratio Ratio::normalize(Ratio a){
 Ratio Ratio::operator+(const Ratio &rhs) const {
   if (rhs.numerator() == 0) //if zero, return left hand side
     return Ratio(num, denom);
-  /*
-  Ratio a = normalize(*this);
-  Ratio b = normalize(rhs);
-  cout << "B: " << b;
-  a.numerator(a.num*lcm(a.denom, b.denom));
-  a.denominator(a.denom*(lcm(a.denom, b.denom)));
-  b.numerator(b.num*lcm(a.denom, b.denom));
-  b.denominator(b.denom*(lcm(a.denom, b.denom)));
-  // use normalized ratios to return sum; call lcm to add properly and normalize again.
- */
+
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
   long newDenom = gcd(a.denominator(), b.denominator())*lcm(a.denominator(), b.denominator());
