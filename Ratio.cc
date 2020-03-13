@@ -5,12 +5,12 @@ using namespace std;
 // Constructors
 Ratio::Ratio(long numerator, long denominator): num(numerator), denom(denominator){
   if (!denominator)
-    throw runtime_error("Denominator cannot be zero.");
+    throw runtime_error("Divisor of zero.");
 }
 
 Ratio::Ratio(int numerator, int denominator): num(numerator), denom(denominator){
   if (!denominator)
-    throw runtime_error("Denominator cannot be zero.");
+    throw runtime_error("Divisor of zero.");
 }
 // Copy Constructor
 Ratio::Ratio(const Ratio &rhs) : num(rhs.num), denom(rhs.denom){
@@ -23,11 +23,13 @@ Ratio &Ratio::operator=(const Ratio &rhs) {
 }
 // Getters & Setters
 long Ratio::numerator() const {
-  return num;
+  Ratio a = normalize(*this);
+  return a.num;
 }
 
 long Ratio::denominator() const {
-  return denom;
+  Ratio a = normalize(*this);
+  return a.denom;
 }
 
 void Ratio::numerator(long top){
@@ -41,16 +43,49 @@ void Ratio::denominator(long bot){
 }
 
 // Ratio operations
-long double Ratio::ratio(){
+long double Ratio::ratio() const{
   long double upper = num;
   long double lower = denom;
   return upper/lower;
 }
 
 Ratio Ratio::add(Ratio r1, Ratio r2, Ratio r3, Ratio r4, Ratio r5, Ratio r6, Ratio r7, Ratio r8){
-  Ratio sum = *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
-  return sum;
+  return *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
 }
+
+Ratio Ratio::subtract(Ratio r2){
+    return *this - r2;
+}
+
+Ratio Ratio::multiply(Ratio r2){
+    return *this * r2;
+}
+
+Ratio Ratio::divide(Ratio r2){
+    return *this / r2;
+}
+
+int Ratio::compare(Ratio r2){
+    Ratio a = normalize(*this);
+    Ratio b = normalize(r2);
+    if (*this == r2)
+        return 0;
+    if (a.numerator() - b.numerator() > 0)
+        return 1;
+    return -1;
+}
+
+int Ratio::compare(long double val){
+  // the value passed in can be turned into a ratio over 1.
+  // normalize both ratios and then call compare??
+    long double a = normalize(*this).ratio();
+    if (a == val)
+        return 0;
+    if (a > val)
+        return 1;
+    return -1;
+}
+
 // Methods for ratio normalization
 int Ratio::gcd(int a, int b){
   //This code was copied and adapted from:
@@ -72,8 +107,8 @@ int Ratio::lcm(int a, int b){
 
 // Normalize a fraction; This implementation is messy, but it works.
 Ratio Ratio::normalize(Ratio a){
-  int num = a.numerator();
-  int denom = a.denominator();
+  int num = a.num;
+  int denom = a.denom;
 
   if (num == 0){
     a.denominator(1);
@@ -81,46 +116,75 @@ Ratio Ratio::normalize(Ratio a){
   }
 
   if (num < 0 && denom < 0){
-    a.numerator(-1*a.numerator()/gcd(abs(num), abs(denom)));
-    a.denominator(-1*a.denominator()/gcd(abs(num), abs(denom)));
+    a.numerator(-1*a.num/gcd(abs(num), abs(denom)));
+    a.denominator(-1*a.denom/gcd(abs(num), abs(denom)));
     return a;
   }
   else if (num < 0 || denom < 0){
-    a.numerator(-1*abs(a.numerator()/gcd(abs(num), abs(denom))));
-    a.denominator(abs(a.denominator()/gcd(abs(num), abs(denom))));
+    a.numerator(-1*abs(a.num/gcd(abs(num), abs(denom))));
+    a.denominator(abs(a.denom/gcd(abs(num), abs(denom))));
     return a;    
   }
   
-  a.numerator(abs(a.numerator()/gcd(abs(num), abs(denom))));
-  a.denominator(abs(a.denominator()/gcd(abs(num), abs(denom))));
+  a.numerator(abs(a.num/gcd(abs(num), abs(denom))));
+  a.denominator(abs(a.denom/gcd(abs(num), abs(denom))));
   return a;
 }
 
 // Operator overloading
 Ratio Ratio::operator+(const Ratio &rhs) const {
- // long newNum, newDenom;
   if (rhs.numerator() == 0) //if zero, return left hand side
     return Ratio(num, denom);
-  
+  /*
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
-     
-  long anum = a.numerator();
-  long adenom = a.denominator();
-  long bnum = b.numerator();
-  long bdenom = b.denominator();
-
- 
+  cout << "B: " << b;
+  a.numerator(a.num*lcm(a.denom, b.denom));
+  a.denominator(a.denom*(lcm(a.denom, b.denom)));
+  b.numerator(b.num*lcm(a.denom, b.denom));
+  b.denominator(b.denom*(lcm(a.denom, b.denom)));
   // use normalized ratios to return sum; call lcm to add properly and normalize again.
-  int mul = lcm(adenom, bdenom); 
-  a.numerator(anum*mul);
-  b.numerator(bnum*mul);
-  a.denominator(adenom*mul);
-  b.denominator(bdenom*mul);
+ */
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+  long newDenom = gcd(a.denominator(), b.denominator())*lcm(a.denominator(), b.denominator());
+  long newNum = a.numerator()*(newDenom/a.denominator()) + b.numerator()*(newDenom/b.denominator());
   
-  return normalize(Ratio(a.numerator() + b.numerator(), a.denominator()));
+  return normalize(Ratio(newNum, newDenom));
 }
 
+Ratio Ratio::operator-(const Ratio &rhs) const {
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+  b.numerator(-1*b.numerator());  
+  return a + b;  
+}
+
+Ratio Ratio::operator*(const Ratio &rhs) const {
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+   
+  return normalize(Ratio(a.numerator()*b.numerator(), a.denominator()*b.denominator()));  
+}
+
+Ratio Ratio::operator/(const Ratio &rhs) const {
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+  long bnum, bdnum;
+  bnum = b.denominator();
+  bdnum = b.numerator();
+  b = Ratio(bnum, bdnum);
+   
+  return a * b; 
+}
+
+bool Ratio::operator==(const Ratio &rhs) const {
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+  if (a.numerator() == b.numerator() && a.denominator() == b.denominator())
+      return true;
+  return false; 
+}
 // Operator Overloading for extraction and insertion
 istream &operator>>(std::istream &is, Ratio &val) {
     long numer, denom;
@@ -133,5 +197,5 @@ istream &operator>>(std::istream &is, Ratio &val) {
 }
 
 ostream &operator<<(ostream &stream, const Ratio &val) {
-  return stream << val.numerator() << "/"  << val.denominator() << "\n";
+  return stream << val.numerator() << "/"  << val.denominator();
 }

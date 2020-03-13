@@ -6,8 +6,9 @@
 class Ratio {
   public:
     Ratio() = delete;
-    Ratio(double numerator, double denominator) = delete;
-    Ratio(float numerator, float denominator) = delete;
+    Ratio(double numerator, double denominator = 1) = delete;
+    Ratio(float numerator, float denominator = 1) = delete;
+    Ratio(long double numerator, long double denominator = 1) = delete;
     Ratio(long numerator, long denominator = 1);
     Ratio(int numerator, int denominator = 1);
     Ratio(const Ratio &);
@@ -27,12 +28,21 @@ class Ratio {
     static Ratio normalize(Ratio a);
 
     //Ratio operations
-    long double ratio();
+    long double ratio() const;
     Ratio add(Ratio r1 = 0, Ratio r2 = 0, Ratio r3 = 0, Ratio r4 = 0, Ratio r5 = 0, Ratio r6 = 0, Ratio r7 = 0, Ratio r8 = 0);
-    static Ratio subtract(Ratio r1, Ratio r2);
+    Ratio subtract(Ratio r2);
+    Ratio multiply(Ratio r2);
+    Ratio divide(Ratio r2);
+    int compare(Ratio r2);
+    int compare(long double val);
+    
+    
     //Operator overloading
     Ratio operator+(const Ratio &) const;
     Ratio operator-(const Ratio &) const;
+    Ratio operator*(const Ratio &) const;
+    Ratio operator/(const Ratio &) const;
+    bool operator==(const Ratio &) const;
 
   private:
     long num, denom;
