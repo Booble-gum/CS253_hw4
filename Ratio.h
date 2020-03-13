@@ -28,9 +28,11 @@ class Ratio {
 
     //Ratio operations
     long double ratio();
-    static Ratio add(Ratio r1 = 0, Ratio r2 = 0, Ratio r3 = 0, Ratio r4 = 0, Ratio r5 = 0, Ratio r6 = 0, Ratio r7 = 0, Ratio r8 = 0);
+    Ratio add(Ratio r1 = 0, Ratio r2 = 0, Ratio r3 = 0, Ratio r4 = 0, Ratio r5 = 0, Ratio r6 = 0, Ratio r7 = 0, Ratio r8 = 0);
+    static Ratio subtract(Ratio r1, Ratio r2);
     //Operator overloading
     Ratio operator+(const Ratio &) const;
+    Ratio operator-(const Ratio &) const;
 
   private:
     long num, denom;

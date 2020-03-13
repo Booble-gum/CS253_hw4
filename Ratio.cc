@@ -48,7 +48,8 @@ long double Ratio::ratio(){
 }
 
 Ratio Ratio::add(Ratio r1, Ratio r2, Ratio r3, Ratio r4, Ratio r5, Ratio r6, Ratio r7, Ratio r8){
-  return r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8;
+  Ratio sum = *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
+  return sum;
 }
 // Methods for ratio normalization
 int Ratio::gcd(int a, int b){
@@ -79,32 +80,45 @@ Ratio Ratio::normalize(Ratio a){
     return a;
   }
 
-  else if (num < 0 && denom < 0){
+  if (num < 0 && denom < 0){
     a.numerator(-1*a.numerator()/gcd(abs(num), abs(denom)));
     a.denominator(-1*a.denominator()/gcd(abs(num), abs(denom)));
     return a;
   }
-
-  a.numerator(-1*abs(a.numerator()/gcd(abs(num), abs(denom))));
+  else if (num < 0 || denom < 0){
+    a.numerator(-1*abs(a.numerator()/gcd(abs(num), abs(denom))));
+    a.denominator(abs(a.denominator()/gcd(abs(num), abs(denom))));
+    return a;    
+  }
+  
+  a.numerator(abs(a.numerator()/gcd(abs(num), abs(denom))));
   a.denominator(abs(a.denominator()/gcd(abs(num), abs(denom))));
   return a;
 }
 
 // Operator overloading
 Ratio Ratio::operator+(const Ratio &rhs) const {
-  long newNum, newDenom;
-  Ratio a = normalize(*this);
-  Ratio b = normalize(rhs);
-
+ // long newNum, newDenom;
   if (rhs.numerator() == 0) //if zero, return left hand side
     return Ratio(num, denom);
-  // use normalized ratios to return sum; call lcm to add properly and normalize again.
   
+  Ratio a = normalize(*this);
+  Ratio b = normalize(rhs);
+     
+  long anum = a.numerator();
+  long adenom = a.denominator();
+  long bnum = b.numerator();
+  long bdenom = b.denominator();
 
-
-  newNum = num + rhs.numerator();
-  newDenom = denom + rhs.denominator();
-  return Ratio(newNum, newDenom);
+ 
+  // use normalized ratios to return sum; call lcm to add properly and normalize again.
+  int mul = lcm(adenom, bdenom); 
+  a.numerator(anum*mul);
+  b.numerator(bnum*mul);
+  a.denominator(adenom*mul);
+  b.denominator(bdenom*mul);
+  
+  return normalize(Ratio(a.numerator() + b.numerator(), a.denominator()));
 }
 
 // Operator Overloading for extraction and insertion
