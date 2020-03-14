@@ -11,15 +11,18 @@ Ratio::Ratio(int numerator, int denominator): num(numerator), denom(denominator)
   if (!denominator)
     throw runtime_error("Divisor of zero.");
 }
+
 // Copy Constructor
 Ratio::Ratio(const Ratio &rhs) : num(rhs.num), denom(rhs.denom){
 }
+
 // Assignment operator
 Ratio &Ratio::operator=(const Ratio &rhs) {
   num = rhs.num;
   denom = rhs.denom;
   return *this;
 }
+
 // Getters & Setters
 long Ratio::numerator() const {
   Ratio a = normalize(*this);
@@ -48,13 +51,13 @@ long double Ratio::ratio() const{
 }
 
 Ratio Ratio::add(Ratio r1, Ratio r2, Ratio r3, Ratio r4, Ratio r5, Ratio r6, Ratio r7, Ratio r8){
-    return *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8; 
+    return *this + r1 + r2 + r3 + r4 + r5 + r6 + r7 + r8;
 }
-Ratio Ratio::subtract(Ratio r2){ return *this - r2; }
+Ratio Ratio::subtract(Ratio r2) {return *this - r2;}
 
-Ratio Ratio::multiply(Ratio r2){ return *this * r2; }
+Ratio Ratio::multiply(Ratio r2) {return *this * r2;}
 
-Ratio Ratio::divide(Ratio r2){ return *this / r2;}
+Ratio Ratio::divide(Ratio r2) {return *this / r2;}
 
 int Ratio::compare(Ratio r2){
     Ratio a = normalize(*this);
@@ -114,9 +117,9 @@ Ratio Ratio::normalize(Ratio a){
   else if (num < 0 || denom < 0){
     a.numerator(-1*abs(a.num/gcd(abs(num), abs(denom))));
     a.denominator(abs(a.denom/gcd(abs(num), abs(denom))));
-    return a;    
+    return a;
   }
-  
+
   a.numerator(abs(a.num/gcd(abs(num), abs(denom))));
   a.denominator(abs(a.denom/gcd(abs(num), abs(denom))));
   return a;
@@ -126,28 +129,28 @@ Ratio Ratio::normalize(Ratio a){
 Ratio Ratio::operator+(const Ratio &rhs) const {
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
-  
+
   if (rhs.numerator() == 0) //if zero, return left hand side
     return Ratio(a.num, a.denom);
-  
+
   long newDenom = gcd(a.denominator(), b.denominator())*lcm(a.denominator(), b.denominator());
   long newNum = a.numerator()*(newDenom/a.denominator()) + b.numerator()*(newDenom/b.denominator());
-  
+
   return normalize(Ratio(newNum, newDenom));
 }
 
 Ratio Ratio::operator-(const Ratio &rhs) const {
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
-  b.numerator(-1*b.numerator());  
-  return a + b;  
+  b.numerator(-1*b.numerator());
+  return a + b;
 }
 
 Ratio Ratio::operator*(const Ratio &rhs) const {
   Ratio a = normalize(*this);
   Ratio b = normalize(rhs);
-   
-  return normalize(Ratio(a.numerator()*b.numerator(), a.denominator()*b.denominator()));  
+
+  return normalize(Ratio(a.numerator()*b.numerator(), a.denominator()*b.denominator()));
 }
 
 Ratio Ratio::operator/(const Ratio &rhs) const {
@@ -157,8 +160,8 @@ Ratio Ratio::operator/(const Ratio &rhs) const {
   bnum = b.denominator();
   bdnum = b.numerator();
   b = Ratio(bnum, bdnum);
-   
-  return a * b; 
+
+  return a * b;
 }
 
 bool Ratio::operator==(const Ratio &rhs) const {
@@ -166,7 +169,7 @@ bool Ratio::operator==(const Ratio &rhs) const {
   Ratio b = normalize(rhs);
   if (a.numerator() == b.numerator() && a.denominator() == b.denominator())
       return true;
-  return false; 
+  return false;
 }
 
 // Operator Overloading for extraction and insertion
